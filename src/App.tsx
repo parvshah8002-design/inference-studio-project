@@ -55,7 +55,12 @@ export default function App() {
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
   useEffect(() => { localStorage.setItem("inference-prompts", JSON.stringify(prompts)); }, [prompts]);
 
-  const headers = useMemo(() => apiKey.trim() ? { "x-groq-api-key": apiKey.trim() } : {}, [apiKey]);
+  const headers = useMemo<Record<string, string>>(() => {
+    const key = apiKey.trim();
+    const result: Record<string, string> = {};
+    if (key) result["x-groq-api-key"] = key;
+    return result;
+  }, [apiKey]);
   async function loadModels() {
     setError("");
     try {
